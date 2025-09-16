@@ -31,11 +31,50 @@
     .ans.disabled{opacity:0.6;cursor:default;transform:none}
     .ans.correct{outline:3px solid rgba(16,185,129,0.12);box-shadow:0 8px 24px rgba(16,185,129,0.06)}
     .ans.wrong{outline:3px solid rgba(239,68,68,0.12);box-shadow:0 8px 24px rgba(239,68,68,0.06)}
-
+/* 
     .timer{width:120px;min-width:120px;text-align:center}
     .time-circle{width:86px;height:86px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:conic-gradient(var(--accent) var(--p,0%), rgba(255,255,255,0.03) 0%);border:6px solid rgba(255,255,255,0.02);margin:0 auto 10px auto}
     .time{font-size:20px;font-weight:700}
-    .small{font-size:12px;color:var(--muted)}
+    .small{font-size:12px;color:var(--muted)} */
+    .time-wrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 10px auto;
+}
+
+.time-svg {
+  transform: rotate(-90deg); /* yuqoridan boshlansin */
+}
+
+.circle-bg {
+  fill: none;
+  stroke: rgba(255,255,255,0.05);
+  stroke-width: 10;
+}
+
+.circle {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-dasharray: 283; /* 2πr (r=45) */
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 1s linear;
+}
+
+.time-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.time {
+  font-size: 20px;
+  font-weight: 700;
+}
 
     .controls{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
     button.btn{padding:10px 14px;border-radius:12px;border:0;cursor:pointer;font-weight:600}
@@ -60,77 +99,3 @@
       .topbar{flex-direction:column;gap:10px}
       .meta{text-align:left}
     }
-@media (max-width: 720px) {
-  .wrap {
-    padding: 16px;
-    border-radius: 14px;
-  }
-
-  header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  h1 {
-    font-size: 18px;
-  }
-
-  p.lead {
-    font-size: 12px;
-  }
-
-  .question-area {
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .q-text {
-    font-size: 18px;
-  }
-
-  .answers {
-    grid-template-columns: 1fr;
-    gap: 10px;
-  }
-
-  .ans {
-    font-size: 15px;
-    padding: 14px;
-  }
-
-  .controls {
-    justify-content: center;
-    gap: 12px;
-  }
-
-  .timer {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-  }
-
-  .time-circle {
-    width: 70px;
-    height: 70px;
-    margin: 0 12px 0 0;
-  }
-
-  .time {
-    font-size: 18px;
-  }
-
-  .question-list {
-    justify-content: center;
-  }
-
-  .q-dot {
-    width: 24px;
-    height: 24px;
-    font-size: 12px;
-  }
-
-  .result .score {
-    font-size: 32px;
-  }
-}
