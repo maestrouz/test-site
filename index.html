@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ERG MATH</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">ABC</div>
+        <div>
+          <h1>Onlayn Test</h1>
+          <p class="lead">Har bir savol uchun 1 daqiqa — vaqt tugasa savol xato deb olinadi.</p>
+        </div>
+      </div>
+      <div style="text-align:right">
+        <div class="small">Savollar soni: <strong id="totalCount">0</strong></div>
+        <div class="small">Vaqt har savolda: <strong>60s</strong></div>
+      </div>
+    </header>
+
+    <div class="card">
+      <div class="topbar">
+        <div class="progress" aria-hidden><i id="progressBar" style="width:0%"></i></div>
+        <div class="meta">Savol: <span id="qIndex">0</span>/<span id="qTotal">0</span></div>
+      </div>
+
+      <div class="question-area">
+        <div class="q-left">
+          <div class="q-number" id="qNumber"> </div>
+          <h2 class="q-text" id="qText"> </h2>
+
+          <div class="answers" id="answers"></div>
+
+          <div class="controls">
+            <button class="btn btn--ghost" id="prevBtn">Oldingi</button>
+            <button class="btn btn--primary" id="nextBtn">Keyingi</button>
+          </div>
+
+          <div class="question-list" id="qList"></div>
+        </div>
+
+        <div class="timer">
+          <div class="time-circle" id="timeCircle" style="--p:0%">
+            <div>
+              <div class="time" id="timeLeft">60</div>
+              <div class="small">soniya</div>
+            </div>
+          </div>
+          <div class="small">To‘g‘ri: <span id="correctCount">0</span> | Noto‘g‘ri: <span id="wrongCount">0</span></div>
+        </div>
+      </div>
+
+      <div class="result" id="resultBox">
+        <div class="score" id="finalScore">0 / 0</div>
+        <div class="detail" id="finalDetail"></div>
+        <div style="margin-top:20px"><button class="btn btn--primary" id="retryBtn">Qayta boshlash</button></div>
+      </div>
+
+    </div>
+
+    <footer>"Strive to build things that make a difference!"</footer>
+  </div>
+
+    <script src="./script.js"></script>
+</body>
+</html>
