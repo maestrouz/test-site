@@ -7,10 +7,13 @@
     *{box-sizing:border-box}
     body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#041024 0%, #07132a 100%);color:#e6eef8}
     .wrap{width:980px;max-width:96%;padding:28px;border-radius:20px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));box-shadow:0 10px 30px rgba(2,6,23,0.7);border:1px solid rgba(255,255,255,0.03)}
-    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    header{display:block;align-items:center;justify-content:space-between;margin-bottom:18px}
     .brand{display:flex;gap:14px;align-items:center}
-    .logo{width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,var(--accent),#06b6d4);display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:18px;box-shadow:0 6px 20px rgba(124,58,237,0.18)}
-    h1{font-size:20px;margin:0}
+    .logo{width:56px;height:56px;border-radius:25px;display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:18px;box-shadow:0 6px 20px rgba(124,58,237,0.18)}
+    h1{font-size:20px;margin:0;} 
+    .logo img{
+      width: 90px;
+    }
     p.lead{margin:0;color:var(--muted);font-size:13px}
 
     .card{background:var(--card);padding:22px;border-radius:14px;border:1px solid rgba(255,255,255,0.03)}
@@ -98,4 +101,10 @@
       .timer{width:100%}
       .topbar{flex-direction:column;gap:10px}
       .meta{text-align:left}
+      .xabar{
+        margin-top: 10px;
+      }
+      h1{
+        text-align: center;
+      }
     }
