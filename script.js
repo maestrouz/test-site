@@ -205,13 +205,20 @@
   document.querySelector('.question-area').style.display='none';
   document.querySelector('.topbar').style.display='none';
 
-  // 📤 Telegram WebApp orqali natijani yuborish
+  // 📤 Telegram botga natijani yuborish
   if (window.Telegram && window.Telegram.WebApp) {
     const tg = window.Telegram.WebApp;
     tg.sendData(JSON.stringify({
       score: answeredCorrect,
       total: total
     }));
+    
+    // 🔒 Yopishdan oldin yuborishga vaqt beramiz
+    setTimeout(() => {
+      tg.close();
+    }, 1000);
+  }
+}
     
     // ❌ tg.close() ni darhol yozmang
     // ✅ yuborishga vaqt beramiz
