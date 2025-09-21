@@ -1,5 +1,5 @@
 // Sample question set
-const questions = [
+let questions = [
   {id:1, q: "O'zbekiston poytaxti qaysi shahar?", choices: ["A. Toshkent","B. Samarqand","C. Buxoro"], a:0},
   {id:2, q: "Kimyoda suvning formulasi nima?", choices: ["A. CO2","B. H2O","C. O2"], a:1},
   {id:3, q: "HTML nima uchun ishlatiladi?", choices: ["A. Sahifa tuzilishi","B. Stil berish","C. Ma'lumotlar bazasi"], a:0},
@@ -42,13 +42,27 @@ const radius = 45;
 const circumference = 2 * Math.PI * radius;
 circleEl.style.strokeDasharray = circumference;
 
+// Telegram WebApp API
+const tg = window.Telegram.WebApp;
+
 // Init UI
 function init(){
+  // savollarni randomlashtirish
+  questions = shuffle(questions);
+
   total = questions.length;
   document.getElementById('qTotal').innerText = total;
   totalCount.innerText = total;
   buildQuestionDots();
   renderQuestion(0);
+}
+
+function shuffle(array){
+  for (let i = array.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
 }
 
 function buildQuestionDots(){
@@ -57,8 +71,7 @@ function buildQuestionDots(){
     const d = document.createElement('div');
     d.className='q-dot';
     d.innerText = i+1;
-    d.addEventListener('click',()=>{ goTo(i); });
-    qList.appendChild(d);
+    qList.appendChild(d); // faqat ko‘rsatadi, bosib o‘tmaydi
   }
 }
 
@@ -155,8 +168,7 @@ function nextQuestion(){
   else { finishTest(); }
 }
 
-function goTo(i){ renderQuestion(i); }
-
+// 🔴 yagona finishTest()
 function finishTest(){
   stopTimer();
   const answeredCorrect = correct;
@@ -166,6 +178,12 @@ function finishTest(){
   finalDetail.innerText = `To‘g‘ri javoblar: ${answeredCorrect}. Foiz: ${percent}%`;
   document.querySelector('.question-area').style.display='none';
   document.querySelector('.topbar').style.display='none';
+
+  // 🔥 Natijani botga yuborish
+  if (tg) {
+    tg.sendData(JSON.stringify({score: answeredCorrect, total: total}));
+    tg.close();
+  }
 }
 
 nextBtn.addEventListener('click',()=>{ nextQuestion(); });
