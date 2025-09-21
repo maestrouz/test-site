@@ -195,29 +195,26 @@
 
   function goTo(i){ renderQuestion(i); }
 
-  // yagona finishTest — ekranga chiqaradi va (agar WebApp ichida bo'lsa) botga yuboradi
   function finishTest(){
-    stopTimer();
-    const answeredCorrect = correct;
-    if (resultBox) resultBox.classList.add('show');
-    if (finalScore) finalScore.innerText = `${answeredCorrect} / ${total}`;
-    const percent = Math.round((answeredCorrect/total)*100);
-    if (finalDetail) finalDetail.innerText = `To‘g‘ri javoblar: ${answeredCorrect}. Foiz: ${percent}%`;
-    const qa = document.querySelector('.question-area');
-    const tb = document.querySelector('.topbar');
-    if (qa) qa.style.display='none';
-    if (tb) tb.style.display='none';
+  stopTimer();
+  const answeredCorrect = correct;
+  resultBox.classList.add('show');
+  finalScore.innerText = `${answeredCorrect} / ${total}`;
+  const percent = Math.round((answeredCorrect/total)*100);
+  finalDetail.innerText = `To‘g‘ri javoblar: ${answeredCorrect}. Foiz: ${percent}%`;
+  document.querySelector('.question-area').style.display='none';
+  document.querySelector('.topbar').style.display='none';
 
-    // WebApp: natijani botga yuborish
-    if (tg && typeof tg.sendData === 'function') {
-      try {
-        tg.sendData(JSON.stringify({score: answeredCorrect, total: total}));
-        // tg.close(); // o'z xohishingizga qarab yopilishi mumkin
-      } catch (e) {
-        console.warn('tg.sendData error', e);
-      }
-    }
+  // 🔴 Telegram WebApp orqali natijani yuboramiz
+  if (window.Telegram && window.Telegram.WebApp) {
+    const tg = window.Telegram.WebApp;
+    tg.sendData(JSON.stringify({
+      score: answeredCorrect,
+      total: total
+    }));
+    tg.close(); // WebApp oynasini yopadi
   }
+}
 
   // event listeners (agar elementlar mavjud bo'lsa)
   if (nextBtn) nextBtn.addEventListener('click',()=>{ nextQuestion(); });
