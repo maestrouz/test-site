@@ -205,16 +205,22 @@
   document.querySelector('.question-area').style.display='none';
   document.querySelector('.topbar').style.display='none';
 
-  // 🔴 Telegram WebApp orqali natijani yuboramiz
+  // 📤 Telegram WebApp orqali natijani yuborish
   if (window.Telegram && window.Telegram.WebApp) {
     const tg = window.Telegram.WebApp;
     tg.sendData(JSON.stringify({
       score: answeredCorrect,
       total: total
     }));
-    tg.close(); // WebApp oynasini yopadi
+    
+    // ❌ tg.close() ni darhol yozmang
+    // ✅ yuborishga vaqt beramiz
+    setTimeout(() => {
+      tg.close();
+    }, 1000); 
   }
 }
+
 
   // event listeners (agar elementlar mavjud bo'lsa)
   if (nextBtn) nextBtn.addEventListener('click',()=>{ nextQuestion(); });
