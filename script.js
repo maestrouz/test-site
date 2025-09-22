@@ -192,7 +192,7 @@
                     : null;
 
     if (chatId) {
-      const serverURL = 'https://wap.ispmanager.sysdc.uz/manager/file/L3Zhci93d3cvNjhjODM2YzQ1ODdkNS9kYXRhL3d3dy82OGM4MzZjNDU4ODFmLmNsb3VkdXoucnUvUmVxdWVzdC9SZXF1ZXN0LnBocA=='; // <-- To‘g‘ri server URL bilan almashtiring
+      const serverURL = 'https://68c836c45881f.clouduz.ru/Request/Request.php'; // <-- To‘g‘ri server URL bilan almashtiring
       const body = {
         secret: 'obidjon2666', // <-- PHPdagi secret bilan bir xil qiling
         chat_id: chatId,
