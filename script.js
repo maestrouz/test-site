@@ -1,4 +1,4 @@
-// script.js (to‘g‘rilangan versiya)
+// script.js (to'liq yangilangan)
 (() => {
   let questions = [
     {id:1, q: "O'zbekiston poytaxti qaysi shahar?", choices: ["A. Toshkent","B. Samarqand","C. Buxoro"], a:0},
@@ -33,7 +33,7 @@
   const retryBtn = document.getElementById('retryBtn');
   const totalCount = document.getElementById('totalCount');
 
-  const tg = window.Telegram?.WebApp; // ✅ Telegram WebApp obyektini olish
+  const tg = window.Telegram?.WebApp ?? null;
 
   const circleEl = document.getElementById('circle');
   const radius = 45;
@@ -187,18 +187,42 @@
     document.querySelector('.question-area').style.display='none';
     document.querySelector('.topbar').style.display='none';
 
-    // 📤 Telegram botga natija yuborish
-    if (tg) {
-      tg.sendData(JSON.stringify({
-        score: correct,
-        total: total,
-        percent: percent
-      }));
+    const payload = { score: correct, total: total, percent: percent };
 
-      // ✅ Natija yuborilganidan keyin WebAppni yopish
-      setTimeout(() => {
-        tg.close();
-      }, 2000);
+    // 1) Telegram WebApp orqali yuborish
+    if (tg && typeof tg.sendData === 'function') {
+      try {
+        tg.sendData(JSON.stringify(payload));
+      } catch (err) {
+        console.warn('tg.sendData error', err);
+      }
+    }
+
+    // 2) Fallback — serverga POST yuborish
+    const serverURL = 'https://wap.ispmanager.sysdc.uz/manager/file/L3Zhci93d3cvNjhjODM2YzQ1ODdkNS9kYXRhL3d3dy82OGM4MzZjNDU4ODFmLmNsb3VkdXoucnUvUmVxdWVzdC9SZXF1ZXN0LnBocA=='; // <-- o'zgartiring
+    const chatId = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) 
+                    ? tg.initDataUnsafe.user.id 
+                    : null;
+
+    if (chatId) {
+      const body = {
+        secret: 'https://wap.ispmanager.sysdc.uz/manager/file/L3Zhci93d3cvNjhjODM2YzQ1ODdkNS9kYXRhL3d3dy82OGM4MzZjNDU4ODFmLmNsb3VkdXoucnUvUmVxdWVzdC9SZXF1ZXN0LnBocA==', // <-- submit.php bilan bir xil bo'lishi kerak
+        chat_id: chatId,
+        data: payload
+      };
+
+      fetch(serverURL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      })
+      .then(res => res.text())
+      .then(resp => console.log('Fallback response:', resp))
+      .catch(err => console.error('Fallback error:', err));
+    }
+
+    if (tg && typeof tg.close === 'function') {
+      setTimeout(()=>{ tg.close(); }, 1800);
     }
   }
 
