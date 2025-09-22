@@ -1,4 +1,3 @@
-// script.js (to'liq yangilangan)
 (() => {
   let questions = [
     {id:1, q: "O'zbekiston poytaxti qaysi shahar?", choices: ["A. Toshkent","B. Samarqand","C. Buxoro"], a:0},
@@ -188,25 +187,14 @@
     document.querySelector('.topbar').style.display='none';
 
     const payload = { score: correct, total: total, percent: percent };
-
-    // 1) Telegram WebApp orqali yuborish
-    if (tg && typeof tg.sendData === 'function') {
-      try {
-        tg.sendData(JSON.stringify(payload));
-      } catch (err) {
-        console.warn('tg.sendData error', err);
-      }
-    }
-
-    // 2) Fallback — serverga POST yuborish
-    const serverURL = 'https://wap.ispmanager.sysdc.uz/manager/file/L3Zhci93d3cvNjhjODM2YzQ1ODdkNS9kYXRhL3d3dy82OGM4MzZjNDU4ODFmLmNsb3VkdXoucnUvUmVxdWVzdC9SZXF1ZXN0LnBocA=='; // <-- o'zgartiring
     const chatId = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) 
                     ? tg.initDataUnsafe.user.id 
                     : null;
 
     if (chatId) {
+      const serverURL = 'https://your-server.com/Request.php';  // <-- To‘g‘ri server URL bilan almashtiring
       const body = {
-        secret: 'https://wap.ispmanager.sysdc.uz/manager/file/L3Zhci93d3cvNjhjODM2YzQ1ODdkNS9kYXRhL3d3dy82OGM4MzZjNDU4ODFmLmNsb3VkdXoucnUvUmVxdWVzdC9SZXF1ZXN0LnBocA==', // <-- submit.php bilan bir xil bo'lishi kerak
+        secret: 'your-secret-key',  // <-- PHPdagi secret bilan bir xil qiling
         chat_id: chatId,
         data: payload
       };
@@ -217,12 +205,19 @@
         body: JSON.stringify(body)
       })
       .then(res => res.text())
-      .then(resp => console.log('Fallback response:', resp))
-      .catch(err => console.error('Fallback error:', err));
+      .then(resp => {
+        console.log('Server response:', resp);
+        if (resp === "OK") {
+          console.log("Natija muvaffaqiyatli yuborildi!");
+        }
+      })
+      .catch(err => console.error('Server error:', err));
+    } else {
+      console.error('Chat ID topilmadi!');
     }
 
     if (tg && typeof tg.close === 'function') {
-      setTimeout(()=>{ tg.close(); }, 1800);
+      setTimeout(() => { tg.close(); }, 1800);
     }
   }
 
