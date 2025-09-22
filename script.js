@@ -192,9 +192,9 @@
                     : null;
 
     if (chatId) {
-      const serverURL = 'https://your-server.com/Request.php';  // <-- To‘g‘ri server URL bilan almashtiring
+      const serverURL = 'https://your-server.com/Request.php'; // <-- To‘g‘ri server URL bilan almashtiring
       const body = {
-        secret: 'your-secret-key',  // <-- PHPdagi secret bilan bir xil qiling
+        secret: 'my-unique-secret-123', // <-- PHPdagi secret bilan bir xil qiling
         chat_id: chatId,
         data: payload
       };
@@ -204,16 +204,21 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body)
       })
-      .then(res => res.text())
+      .then(res => {
+        console.log('Server HTTP status:', res.status);
+        return res.text();
+      })
       .then(resp => {
         console.log('Server response:', resp);
         if (resp === "OK") {
           console.log("Natija muvaffaqiyatli yuborildi!");
+        } else {
+          console.error('Server response error:', resp);
         }
       })
-      .catch(err => console.error('Server error:', err));
+      .catch(err => console.error('Fetch error:', err));
     } else {
-      console.error('Chat ID topilmadi!');
+      console.error('Chat ID topilmadi! tg.initDataUnsafe:', tg.initDataUnsafe);
     }
 
     if (tg && typeof tg.close === 'function') {
