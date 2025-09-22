@@ -1,4 +1,4 @@
-// script.js (yangilangan)
+// script.js (to‘g‘rilangan versiya)
 (() => {
   let questions = [
     {id:1, q: "O'zbekiston poytaxti qaysi shahar?", choices: ["A. Toshkent","B. Samarqand","C. Buxoro"], a:0},
@@ -33,7 +33,7 @@
   const retryBtn = document.getElementById('retryBtn');
   const totalCount = document.getElementById('totalCount');
 
-  const tg = window.Telegram?.WebApp ?? null;
+  const tg = window.Telegram?.WebApp; // ✅ Telegram WebApp obyektini olish
 
   const circleEl = document.getElementById('circle');
   const radius = 45;
@@ -191,13 +191,14 @@
     if (tg) {
       tg.sendData(JSON.stringify({
         score: correct,
-        total: total
+        total: total,
+        percent: percent
       }));
 
-      // ✅ yuborishga vaqt beramiz
+      // ✅ Natija yuborilganidan keyin WebAppni yopish
       setTimeout(() => {
         tg.close();
-      }, 1500);
+      }, 2000);
     }
   }
 
