@@ -49,6 +49,7 @@
     if (totalCount) totalCount.innerText = total;
     buildQuestionDots();
     renderQuestion(0);
+    console.log('WebApp initialized, tg.initDataUnsafe:', tg?.initDataUnsafe); // Debug
   }
 
   function shuffle(array){
@@ -191,13 +192,17 @@
                     ? tg.initDataUnsafe.user.id 
                     : null;
 
+    console.log('Sending result:', { chatId, payload }); // Debug
+
     if (chatId) {
-      const serverURL = 'https://68c836c45881f.clouduz.ru/Request/Request.php'; // <-- To‘g‘ri server URL bilan almashtiring
+      const serverURL = 'https://68c836c45881f.clouduz.ru/Request/Request.php'; // To'g'ri URL
       const body = {
-        secret: 'x7k9pQz2mW8rT5vY3nL0jF', // <-- PHPdagi secret bilan bir xil qiling
+        secret: 'x7k9pQz2mW8rT5vY3nL0jF', // To'g'ri secret
         chat_id: chatId,
         data: payload
       };
+
+      console.log('Fetch request body:', body); // Debug
 
       fetch(serverURL, {
         method: 'POST',
@@ -205,11 +210,11 @@
         body: JSON.stringify(body)
       })
       .then(res => {
-        console.log('Server HTTP status:', res.status);
+        console.log('Server HTTP status:', res.status); // Debug
         return res.text();
       })
       .then(resp => {
-        console.log('Server response:', resp);
+        console.log('Server response:', resp); // Debug
         if (resp === "OK") {
           console.log("Natija muvaffaqiyatli yuborildi!");
         } else {
@@ -218,7 +223,17 @@
       })
       .catch(err => console.error('Fetch error:', err));
     } else {
-      console.error('Chat ID topilmadi! tg.initDataUnsafe:', tg.initDataUnsafe);
+      console.error('Chat ID topilmadi! tg.initDataUnsafe:', tg?.initDataUnsafe);
+    }
+
+    // Try tg.sendData as a fallback
+    if (tg && typeof tg.sendData === 'function') {
+      try {
+        console.log('Trying tg.sendData:', JSON.stringify(payload));
+        tg.sendData(JSON.stringify(payload));
+      } catch (err) {
+        console.error('tg.sendData error:', err);
+      }
     }
 
     if (tg && typeof tg.close === 'function') {
