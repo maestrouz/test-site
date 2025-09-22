@@ -192,9 +192,9 @@
                     : null;
 
     if (chatId) {
-      const serverURL = 'https://your-server.com/Request.php'; // <-- To‘g‘ri server URL bilan almashtiring
+      const serverURL = 'https://wap.ispmanager.sysdc.uz/manager/file/L3Zhci93d3cvNjhjODM2YzQ1ODdkNS9kYXRhL3d3dy82OGM4MzZjNDU4ODFmLmNsb3VkdXoucnUvUmVxdWVzdC9SZXF1ZXN0LnBocA=='; // <-- To‘g‘ri server URL bilan almashtiring
       const body = {
-        secret: 'my-unique-secret-123', // <-- PHPdagi secret bilan bir xil qiling
+        secret: 'obidjon2666', // <-- PHPdagi secret bilan bir xil qiling
         chat_id: chatId,
         data: payload
       };
