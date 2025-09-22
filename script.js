@@ -194,7 +194,7 @@
     if (chatId) {
       const serverURL = 'https://68c836c45881f.clouduz.ru/Request/Request.php'; // <-- To‘g‘ri server URL bilan almashtiring
       const body = {
-        secret: 'obidjon2666', // <-- PHPdagi secret bilan bir xil qiling
+        secret: 'x7k9pQz2mW8rT5vY3nL0jF', // <-- PHPdagi secret bilan bir xil qiling
         chat_id: chatId,
         data: payload
       };
