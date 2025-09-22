@@ -1,6 +1,5 @@
-// script.js (joylashtiring va hozirgi faylni almashtiring)
+// script.js (yangilangan)
 (() => {
-  // Sample question set
   let questions = [
     {id:1, q: "O'zbekiston poytaxti qaysi shahar?", choices: ["A. Toshkent","B. Samarqand","C. Buxoro"], a:0},
     {id:2, q: "Kimyoda suvning formulasi nima?", choices: ["A. CO2","B. H2O","C. O2"], a:1},
@@ -9,18 +8,14 @@
     {id:5, q: "JavaScript qaysi sohada ishlatiladi?", choices: ["A. Frontend va interaktivlik","B. Faqat backend","C. Grafik dizayn"], a:0}
   ];
 
-  // State
   let idx = 0;
   let total = questions.length;
   let userAnswers = Array(total).fill(null);
   let correct = 0, wrong = 0;
-
-  // Timer
   let timePerQuestion = 60;
   let timeLeft = timePerQuestion;
   let timerInterval = null;
 
-  // DOM refs (hamma elementlar HTML ichida joylashgan)
   const qText = document.getElementById('qText');
   const qNumber = document.getElementById('qNumber');
   const answersDiv = document.getElementById('answers');
@@ -38,10 +33,8 @@
   const retryBtn = document.getElementById('retryBtn');
   const totalCount = document.getElementById('totalCount');
 
-  // Telegram WebApp (XATOSIZ olish — agar WebApp ichida bo'lmasa null bo'ladi)
   const tg = window.Telegram?.WebApp ?? null;
 
-  // SVG circle (timer) — null tekshiruv bilan ishlatiladi
   const circleEl = document.getElementById('circle');
   const radius = 45;
   const circumference = 2 * Math.PI * radius;
@@ -50,7 +43,6 @@
     circleEl.style.strokeDashoffset = String(0);
   }
 
-  // Init UI
   function init(){
     questions = shuffle(questions);
     total = questions.length;
@@ -75,7 +67,6 @@
       const d = document.createElement('div');
       d.className='q-dot';
       d.innerText = i+1;
-      // Eslatma: bosilganda o'tish oldingizcha bloklangan CSS bilan ishlaydi
       qList.appendChild(d);
     }
   }
@@ -89,7 +80,6 @@
     if (qIndex) qIndex.innerText = idx+1;
     if (progressBar) progressBar.style.width = Math.round(((idx)/total)*100) + '%';
 
-    // answers
     if (!answersDiv) return;
     answersDiv.innerHTML='';
     item.choices.forEach((c, ci)=>{
@@ -101,7 +91,6 @@
       answersDiv.appendChild(b);
     });
 
-    // update dots
     if (qList) Array.from(qList.children).forEach((n,ii)=>{ n.classList.toggle('active', ii===idx); });
 
     resetTimer();
@@ -166,12 +155,8 @@
     if(timerInterval){ clearInterval(timerInterval); timerInterval = null; }
   }
 
-  // updateCircle — faqat SVG bilan ishlaydi (agar circle mavjud bo'lsa)
   function updateCircle(){
-    if (!circleEl) {
-      // Agar SVG yo'q bo'lsa eski conic CSS ishlovchi holatda ham qo'yish kerak bo'lsa bu yerga qo'shing.
-      return;
-    }
+    if (!circleEl) return;
     const percent = Math.max(0, Math.min(1, timeLeft / timePerQuestion));
     circleEl.style.strokeDashoffset = String(circumference * (1 - percent));
   }
@@ -193,49 +178,31 @@
     else { finishTest(); }
   }
 
-  function goTo(i){ renderQuestion(i); }
-
   function finishTest(){
-  stopTimer();
-  const answeredCorrect = correct;
-  resultBox.classList.add('show');
-  finalScore.innerText = `${answeredCorrect} / ${total}`;
-  const percent = Math.round((answeredCorrect/total)*100);
-  finalDetail.innerText = `To‘g‘ri javoblar: ${answeredCorrect}. Foiz: ${percent}%`;
-  document.querySelector('.question-area').style.display='none';
-  document.querySelector('.topbar').style.display='none';
+    stopTimer();
+    resultBox.classList.add('show');
+    finalScore.innerText = `${correct} / ${total}`;
+    const percent = Math.round((correct/total)*100);
+    finalDetail.innerText = `To‘g‘ri javoblar: ${correct}. Foiz: ${percent}%`;
+    document.querySelector('.question-area').style.display='none';
+    document.querySelector('.topbar').style.display='none';
 
-  // 📤 Telegram botga natijani yuborish
-  if (window.Telegram && window.Telegram.WebApp) {
-    const tg = window.Telegram.WebApp;
-    tg.sendData(JSON.stringify({
-      score: answeredCorrect,
-      total: total
-    }));
-    
-    // 🔒 Yopishdan oldin yuborishga vaqt beramiz
-    setTimeout(() => {
-      tg.close();
-    }, 1000);
+    // 📤 Telegram botga natija yuborish
+    if (tg) {
+      tg.sendData(JSON.stringify({
+        score: correct,
+        total: total
+      }));
+
+      // ✅ yuborishga vaqt beramiz
+      setTimeout(() => {
+        tg.close();
+      }, 1500);
+    }
   }
-}
-    
-    // ❌ tg.close() ni darhol yozmang
-    // ✅ yuborishga vaqt beramiz
-    setTimeout(() => {
-      tg.close();
-    }, 1000); 
-  }
-}
 
-
-  // event listeners (agar elementlar mavjud bo'lsa)
   if (nextBtn) nextBtn.addEventListener('click',()=>{ nextQuestion(); });
   if (retryBtn) retryBtn.addEventListener('click',()=>{ location.reload(); });
 
-  // start
   init();
-
-  // debug: agar savollar ko'rinmasa, konsolni tekshiring
-  // console.log('quiz initialized', { total, tgPresent: !!tg, circlePresent: !!circleEl });
 })();
