@@ -32,8 +32,6 @@
   const retryBtn = document.getElementById('retryBtn');
   const totalCount = document.getElementById('totalCount');
 
-  const tg = window.Telegram?.WebApp ?? null;
-
   const circleEl = document.getElementById('circle');
   const radius = 45;
   const circumference = 2 * Math.PI * radius;
@@ -49,7 +47,6 @@
     if (totalCount) totalCount.innerText = total;
     buildQuestionDots();
     renderQuestion(0);
-    console.log('WebApp initialized, tg.initDataUnsafe:', tg?.initDataUnsafe); // Debug
   }
 
   function shuffle(array){
@@ -187,57 +184,21 @@
     document.querySelector('.question-area').style.display='none';
     document.querySelector('.topbar').style.display='none';
 
-    const payload = { score: correct, total: total, percent: percent };
-    const chatId = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id) 
-                    ? tg.initDataUnsafe.user.id 
-                    : null;
+    // === YANGI QO‘SHILGAN QISM ===
+    const tg = window.Telegram.WebApp;
+    const userId = tg.initDataUnsafe?.user?.id;
 
-    console.log('Sending result:', { chatId, payload }); // Debug
-
-    if (chatId) {
-      const serverURL = 'https://68c836c45881f.clouduz.ru/Request/Request.php'; // To'g'ri URL
-      const body = {
-        secret: 'x7k9pQz2mW8rT5vY3nL0jF', // To'g'ri secret
-        chat_id: chatId,
-        data: payload
-      };
-
-      console.log('Fetch request body:', body); // Debug
-
-      fetch(serverURL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(body)
-      })
-      .then(res => {
-        console.log('Server HTTP status:', res.status); // Debug
-        return res.text();
-      })
-      .then(resp => {
-        console.log('Server response:', resp); // Debug
-        if (resp === "OK") {
-          console.log("Natija muvaffaqiyatli yuborildi!");
-        } else {
-          console.error('Server response error:', resp);
-        }
-      })
-      .catch(err => console.error('Fetch error:', err));
-    } else {
-      console.error('Chat ID topilmadi! tg.initDataUnsafe:', tg?.initDataUnsafe);
-    }
-
-    // Try tg.sendData as a fallback
-    if (tg && typeof tg.sendData === 'function') {
-      try {
-        console.log('Trying tg.sendData:', JSON.stringify(payload));
-        tg.sendData(JSON.stringify(payload));
-      } catch (err) {
-        console.error('tg.sendData error:', err);
-      }
-    }
-
-    if (tg && typeof tg.close === 'function') {
-      setTimeout(() => { tg.close(); }, 1800);
+    if (userId) {
+      fetch("bot.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: userId,
+          correct: correct,
+          total: total,
+          percent: percent
+        })
+      });
     }
   }
 
