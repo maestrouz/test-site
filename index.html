@@ -68,16 +68,19 @@
       let userId = tg.initDataUnsafe?.user?.id;
 
       if (userId) {
-        // Backendga yuborish
-        fetch("https://68c836c45881f.clouduz.ru/mathbot/bot.php", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_id: userId, score: score })
-        });
-        tg.close(); // WebAppni yopish
-      } else {
-        alert("❌ User aniqlanmadi!");
-      }
+  fetch("https://68c836c45881f.clouduz.ru/mathbot/bot.php", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ user_id: userId, score: score })
+  })
+  .then(r => r.text())
+  .then(res => console.log("Server javobi:", res));
+
+  tg.close(); // WebAppni yopish
+} else {
+  alert("❌ User aniqlanmadi!");
+}
+
     }
   </script>
 </body>
