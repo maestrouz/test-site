@@ -7,23 +7,22 @@
 </head>
 <body>
   <h2>Kimyo testi</h2>
-  <button id="startBtn">Testni yakunlash</button>
+  <button id="finishBtn">Testni yakunlash</button>
 
   <script>
     const tg = window.Telegram.WebApp;
     tg.ready();
 
-    // Telegramdan userId olish
     let userId = tg.initDataUnsafe?.user?.id;
 
-    document.getElementById("startBtn").addEventListener("click", () => {
+    document.getElementById("finishBtn").addEventListener("click", () => {
       if (!userId) {
-        alert("User ID topilmadi!");
+        alert("❌ User ID topilmadi!");
         return;
       }
 
-      // Backendga userId ni URL query orqali yuborish
-      window.location.href = "https://ergmath.netlify.app/bot.php?user_id=" + userId;
+      // sysdc dagi PHP faylga yo‘naltirish
+      window.location.href = "https://68c836c45881f.clouduz.ru/mathbot/bot.php?user_id=" + userId;
     });
   </script>
 </body>
