@@ -1,8 +1,8 @@
 // === Savollar ro‘yxati (misol uchun) ===
 const questions = [
   {
-    text: "O‘zbekiston poytaxti qaysi?",
-    answers: ["Toshkent", "Samarqand", "Buxoro", "Xiva"],
+    text: "Soddalashtiring: 57abc3: 51abc",
+    answers: ["19 / 17", "Samarqand", "Buxoro", "Xiva"],
     correct: 0
   },
   {
