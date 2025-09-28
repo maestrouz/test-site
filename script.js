@@ -1,52 +1,44 @@
-// === Telegram WebApp ===
-const tg = window.Telegram.WebApp;
-tg.ready();
-
-// === Savollar ro‘yxati ===
+// === Savollar ro‘yxati (misol uchun) ===
 const questions = [
   {
-    q: "O‘zbekiston poytaxti qaysi?",
-    options: ["Toshkent", "Samarqand", "Buxoro", "Xiva"],
+    text: "O‘zbekiston poytaxti qaysi?",
+    answers: ["Toshkent", "Samarqand", "Buxoro", "Xiva"],
     correct: 0
   },
   {
-    q: "H2O bu nima?",
-    options: ["Kislorod", "Vodorod", "Suv", "Azot"],
+    text: "H2O bu nima?",
+    answers: ["Kislorod", "Vodorod", "Suv", "Azot"],
     correct: 2
   },
   {
-    q: "2 + 2 * 2 = ?",
-    options: ["6", "8", "4", "10"],
+    text: "2 + 2 * 2 = ?",
+    answers: ["6", "8", "4", "10"],
     correct: 0
   }
 ];
 
-// === O‘zgaruvchilar ===
 let currentIndex = 0;
 let correctCount = 0;
 let wrongCount = 0;
 let timer;
 let timeLeft = 60;
 
-// === HTML elementlar ===
 const qText = document.getElementById("qText");
 const qNumber = document.getElementById("qNumber");
+const answersDiv = document.getElementById("answers");
 const qIndex = document.getElementById("qIndex");
 const qTotal = document.getElementById("qTotal");
 const totalCount = document.getElementById("totalCount");
-const answersDiv = document.getElementById("answers");
-const timeEl = document.getElementById("timeLeft");
+const progressBar = document.getElementById("progressBar");
+const timeLeftEl = document.getElementById("timeLeft");
 const circle = document.getElementById("circle");
 const correctEl = document.getElementById("correctCount");
 const wrongEl = document.getElementById("wrongCount");
 const resultBox = document.getElementById("resultBox");
-const finalScore = document.getElementById("finalScore");
-const finalDetail = document.getElementById("finalDetail");
-const retryBtn = document.getElementById("retryBtn");
 
-// === Boshlanish ===
-qTotal.textContent = questions.length;
-totalCount.textContent = questions.length;
+// Boshlanish
+totalCount.innerText = questions.length;
+qTotal.innerText = questions.length;
 loadQuestion();
 
 // === Savolni yuklash ===
@@ -57,38 +49,37 @@ function loadQuestion() {
   }
 
   let q = questions[currentIndex];
-  qText.textContent = q.q;
-  qNumber.textContent = currentIndex + 1;
-  qIndex.textContent = currentIndex + 1;
+  qText.innerText = q.text;
+  qNumber.innerText = currentIndex + 1;
+  qIndex.innerText = currentIndex + 1;
 
-  // Javoblarni chiqarish
   answersDiv.innerHTML = "";
-  q.options.forEach((opt, i) => {
+  q.answers.forEach((ans, i) => {
     let btn = document.createElement("button");
     btn.className = "btn btn--ghost";
-    btn.textContent = opt;
+    btn.innerText = ans;
     btn.onclick = () => checkAnswer(i);
     answersDiv.appendChild(btn);
   });
 
   // Progress bar
-  document.getElementById("progressBar").style.width =
-    (currentIndex / questions.length) * 100 + "%";
+  progressBar.style.width = ((currentIndex) / questions.length) * 100 + "%";
 
   // Timer
   resetTimer();
 }
 
 // === Javobni tekshirish ===
-function checkAnswer(i) {
+function checkAnswer(index) {
   let q = questions[currentIndex];
-  if (i === q.correct) {
+  if (index === q.correct) {
     correctCount++;
-    correctEl.textContent = correctCount;
+    correctEl.innerText = correctCount;
   } else {
     wrongCount++;
-    wrongEl.textContent = wrongCount;
+    wrongEl.innerText = wrongCount;
   }
+
   currentIndex++;
   loadQuestion();
 }
@@ -97,18 +88,18 @@ function checkAnswer(i) {
 function resetTimer() {
   clearInterval(timer);
   timeLeft = 60;
-  timeEl.textContent = timeLeft;
+  timeLeftEl.innerText = timeLeft;
   updateCircle();
 
   timer = setInterval(() => {
     timeLeft--;
-    timeEl.textContent = timeLeft;
+    timeLeftEl.innerText = timeLeft;
     updateCircle();
 
     if (timeLeft <= 0) {
       clearInterval(timer);
       wrongCount++;
-      wrongEl.textContent = wrongCount;
+      wrongEl.innerText = wrongCount;
       currentIndex++;
       loadQuestion();
     }
@@ -128,19 +119,24 @@ function showResult() {
   document.querySelector(".question-area").style.display = "none";
   resultBox.style.display = "block";
 
+  let correct = correctCount;
+  let wrong = wrongCount;
   let total = questions.length;
 
-  finalScore.textContent = `${correctCount} / ${total}`;
-  finalDetail.textContent =
-    `✅ To‘g‘ri: ${correctCount} ta\n❌ Noto‘g‘ri: ${wrongCount} ta\n📌 Jami: ${total}`;
+  document.getElementById("finalScore").innerText = `${correct} / ${total}`;
+  document.getElementById("finalDetail").innerText =
+    `✅ To‘g‘ri: ${correct} ta\n❌ Noto‘g‘ri: ${wrong} ta\n📌 Jami savol: ${total}`;
 
-  // === Telegram foydalanuvchi ma’lumotlari ===
+  // === Telegram WebApp orqali foydalanuvchi ma’lumot olish ===
+  const tg = window.Telegram.WebApp;
+  tg.ready();
+
   let user = tg.initDataUnsafe?.user || {};
   let userId = user.id || null;
   let username = user.username || "NoUsername";
   let fullname = (user.first_name || "") + " " + (user.last_name || "");
 
-  // === Backendga yuborish (bot.php) ===
+  // === Backend (bot.php) ga yuborish ===
   fetch("bot.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -148,23 +144,25 @@ function showResult() {
       user_id: userId,
       username: username,
       fullname: fullname.trim(),
-      correct: correctCount,
-      wrong: wrongCount,
+      correct: correct,
+      wrong: wrong,
       total: total
     })
   })
     .then(res => res.json())
-    .then(data => console.log("✅ Natija yuborildi:", data))
+    .then(data => {
+      console.log("✅ Natija yuborildi:", data);
+    })
     .catch(err => console.error("❌ Xato:", err));
 }
 
-// === Qayta boshlash tugmasi ===
-retryBtn.onclick = () => {
+// === Qayta boshlash ===
+document.getElementById("retryBtn").onclick = () => {
   currentIndex = 0;
   correctCount = 0;
   wrongCount = 0;
-  correctEl.textContent = "0";
-  wrongEl.textContent = "0";
+  correctEl.innerText = "0";
+  wrongEl.innerText = "0";
   document.querySelector(".question-area").style.display = "flex";
   resultBox.style.display = "none";
   loadQuestion();

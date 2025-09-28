@@ -1,79 +1,84 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="uz">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#336386">
-  <title>ERG</title>
-  <link rel="stylesheet" href="./style.css">
+  <meta charset="UTF-8">
+  <title>Test WebApp</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      background: #28a745;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+    }
+    h2 { margin-bottom: 20px; }
+    .question { margin: 15px 0; text-align: left; }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: #fff;
+      color: #28a745;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <div class="logo">
-          <img src="./img/logo.PNG" alt="logo">
-        </div>
-        <div>
-          <h1>Onlayn Test</h1>
-          <p class="lead">Har bir savol uchun 1 daqiqa — vaqt tugasa savol xato deb olinadi.</p>
-        </div>
-      </div>
-      <div class="xabar" style="text-align:center">
-        <div class="small">Savollar soni: <strong id="totalCount">0</strong></div>
-        <div class="small">Vaqt har savolda: <strong>60s</strong></div>
-      </div>
-    </header>
-
-    <div class="card">
-      <div class="topbar">
-        <div class="progress" aria-hidden><i id="progressBar" style="width:0%"></i></div>
-        <div class="meta">Savol: <span id="qIndex">0</span>/<span id="qTotal">0</span></div>
-      </div>
-
-      <div class="question-area">
-        <div class="q-left">
-          <div class="q-number" id="qNumber"> </div>
-          <h2 class="q-text" id="qText"> </h2>
-
-          <div class="answers" id="answers"></div>
-
-          <div class="controls">
-            <button class="btn btn--ghost" id="prevBtn">Oldingi</button>
-            <button class="btn btn--primary" id="nextBtn">Keyingi</button>
-          </div>
-
-          <div class="question-list" id="qList"></div>
-        </div>
-
-        <div class="timer">
-          <div class="time-wrapper">
-            <svg class="time-svg" width="100" height="100">
-              <circle class="circle-bg" cx="50" cy="50" r="45"></circle>
-              <circle class="circle" id="circle" cx="50" cy="50" r="45"></circle>
-            </svg>
-            <div class="time-text">
-              <div class="time" id="timeLeft">60</div>
-              <div class="small">soniya</div>
-            </div>
-          </div>
-          <div class="small">To‘g‘ri: <span id="correctCount">0</span> | Noto‘g‘ri: <span id="wrongCount">0</span></div>
-        </div>
-      </div>
-
-      <div class="result" id="resultBox">
-        <div class="score" id="finalScore">0 / 0</div>
-        <div class="detail" id="finalDetail"></div>
-        <div style="margin-top:20px"><button class="btn btn--primary" id="retryBtn">Qayta boshlash</button></div>
-      </div>
-      <div></div>
-
+  <h2>📝 Mini Test</h2>
+  <form id="testForm">
+    <div class="question">
+      <p>1) H2O bu nima?</p>
+      <input type="radio" name="q1" value="1"> Suv<br>
+      <input type="radio" name="q1" value="0"> Havo<br>
     </div>
 
-    <footer>"Strive to build things that make a difference!"</footer>
-  </div>
+    <div class="question">
+      <p>2) 2+2 = ?</p>
+      <input type="radio" name="q2" value="0"> 3<br>
+      <input type="radio" name="q2" value="1"> 4<br>
+    </div>
 
-  <script src="./script.js"></script>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <div class="question">
+      <p>3) Quyosh qaysi turdagi yulduz?</p>
+      <input type="radio" name="q3" value="1"> Sariq mitti<br>
+      <input type="radio" name="q3" value="0"> Qizil gigant<br>
+    </div>
+
+    <button type="button" onclick="finishTest()">✅ Testni yakunlash</button>
+  </form>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+    tg.expand();
+
+    function finishTest() {
+      let form = document.getElementById("testForm");
+      let data = new FormData(form);
+      let score = 0;
+
+      for (let [key, val] of data.entries()) {
+        score += parseInt(val);
+      }
+
+      let userId = tg.initDataUnsafe?.user?.id;
+
+      if (userId) {
+        // Backendga yuborish
+        fetch("https://YOUR_DOMAIN/WebApp/bot.php", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ user_id: userId, score: score })
+        });
+        tg.close(); // WebAppni yopish
+      } else {
+        alert("❌ User aniqlanmadi!");
+      }
+    }
+  </script>
 </body>
 </html>
