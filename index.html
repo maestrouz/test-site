@@ -52,36 +52,29 @@
   </form>
 
   <script>
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-    tg.expand();
+   const tg = window.Telegram.WebApp;
+  tg.ready();
 
-    function finishTest() {
-      let form = document.getElementById("testForm");
-      let data = new FormData(form);
-      let score = 0;
+  function finishTest() {
+    let score = 2; // sinov uchun doimiy qiymat
+    let userId = tg.initDataUnsafe?.user?.id;
 
-      for (let [key, val] of data.entries()) {
-        score += parseInt(val);
-      }
+    console.log("User ID:", userId);
+    console.log("Natija:", score);
 
-      let userId = tg.initDataUnsafe?.user?.id;
-
-      if (userId) {
-  fetch("https://68c836c45881f.clouduz.ru/mathbot/bot.php", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ user_id: userId, score: score })
-  })
-  .then(r => r.text())
-  .then(res => console.log("Server javobi:", res));
-
-  tg.close(); // WebAppni yopish
-} else {
-  alert("❌ User aniqlanmadi!");
-}
-
+    if (userId) {
+      fetch("https://68c836c45881f.clouduz.ru/mathbot/bot.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ user_id: userId, score: score })
+      })
+      .then(r => r.text())
+      .then(res => console.log("Server javobi:", res))
+      .catch(err => console.error("Xatolik:", err));
+    } else {
+      alert("❌ User aniqlanmadi!");
     }
+  }
   </script>
 </body>
 </html>
